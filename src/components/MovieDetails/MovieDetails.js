@@ -1,9 +1,9 @@
-import React, { lazy, Suspense } from 'react';
-import { useParams, Link, Outlet, Route, Routes } from 'react-router-dom';
-import { getMovieDetails, getMovieCredits, getMovieReviews } from './Api';
+import React, { lazy } from 'react';
+import { useParams, Link, Route, Routes } from 'react-router-dom';
+import { getMovieDetails, getMovieCredits, getMovieReviews } from '../Api';
 
-const Cast = lazy(() => import('./Cast'));
-const Reviews = lazy(() => import('./Reviews'));
+const Cast = lazy(() => import('../Cast/Cast'));
+const Reviews = lazy(() => import('../Reviews/Reviews'));
 
 const MovieDetails = () => {
   const { movieId } = useParams();
