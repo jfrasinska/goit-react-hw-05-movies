@@ -1,43 +1,25 @@
 import React, { lazy, Suspense } from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Home from './Home';
+import Movies from './Movies';
+import MovieDetails from './MovieDetails';
 
-const Home = lazy(() => import('./Home'));
-const Movies = lazy(() => import('./Movies'));
-const MovieDetails = lazy(() => import('./MovieDetails'));
-const Cast = lazy(() => import('./Cast.js'));
-const Reviews = lazy(() => import('./Reviews'));
-
-function App() {
+const App = () => {
   return (
     <Router>
       <Suspense fallback={<div>Loading...</div>}>
+        <div>
+          <Link to="/">Home</Link>
+          <Link to="/movies">Movies</Link>
+        </div>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/movies" element={<Movies />} />
-          <Route
-            path="/movies/:movieId"
-            element={
-              <MovieDetails>
-                <Route
-                  index
-                  element={<Navigate to="/movies/:movieId/cast" />}
-                />
-                <Route path="cast" element={<Cast />} />
-                <Route path="reviews" element={<Reviews />} />
-              </MovieDetails>
-            }
-          />
-          {/* Przekierowanie do strony głównej */}
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/movies/:movieId/*" element={<MovieDetails />} />
         </Routes>
       </Suspense>
     </Router>
   );
-}
+};
 
 export default App;

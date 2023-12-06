@@ -1,50 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { lazy, Suspense } from 'react';
+import { useParams, Link, Outlet, Route, Routes } from 'react-router-dom';
 import { getMovieDetails, getMovieCredits, getMovieReviews } from './Api';
 
-const MovieDetails = ({ match }) => {
-  const { movieId } = match.params;
-  const [movieDetails, setMovieDetails] = useState({});
-  const [cast, setCast] = useState([]);
-  const [reviews, setReviews] = useState([]);
+const Cast = lazy(() => import('./Cast'));
+const Reviews = lazy(() => import('./Reviews'));
 
-  useEffect(() => {
-    const fetchData = async () => {
+const MovieDetails = () => {
+  const { movieId } = useParams();
+  const [movie, setMovie] = React.useState(null);
+  const [cast, setCast] = React.useState([]);
+  const [reviews, setReviews] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchMovieDetails = async () => {
       const details = await getMovieDetails(movieId);
-      const credits = await getMovieCredits(movieId);
-      const movieReviews = await getMovieReviews(movieId);
-
-      setMovieDetails(details);
-      setCast(credits);
-      setReviews(movieReviews);
+      setMovie(details);
     };
 
-    fetchData();
+    const fetchMovieCast = async () => {
+      const castData = await getMovieCredits(movieId);
+      setCast(castData);
+    };
+
+    const fetchMovieReviews = async () => {
+      const reviewsData = await getMovieReviews(movieId);
+      setReviews(reviewsData);
+    };
+
+    fetchMovieDetails();
+    fetchMovieCast();
+    fetchMovieReviews();
   }, [movieId]);
+
+  if (!movie) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
-      <h1>{movieDetails.title}</h1>
-      <p>{movieDetails.overview}</p>
-
-      <h2>Cast</h2>
-      <ul>
-        {cast.map(actor => (
-          <li key={actor.id}>{actor.name}</li>
-        ))}
-      </ul>
-
-      <h2>Reviews</h2>
-      <ul>
-        {reviews.map(review => (
-          <li key={review.id}>
-            <p>{review.author}</p>
-            <p>{review.content}</p>
-          </li>
-        ))}
-      </ul>
-
-      <Link to="/">Back to Home</Link>
+      <h1>{movie.title}</h1>
+      <img
+        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+        alt={`${movie.title} poster`}
+      />
+      <p>{movie.overview}</p>
+      <nav>
+        <Link to={`/movies/${movieId}/cast`}>Cast</Link>
+        <Link to={`/movies/${movieId}/reviews`}>Reviews</Link>
+      </nav>
+      <hr />
+      <Routes>
+        <Route index element={<div>Default Content for MovieDetails</div>} />
+        <Route path="cast" element={<Cast cast={cast} />} />
+        <Route path="reviews" element={<Reviews reviews={reviews} />} />
+      </Routes>
     </div>
   );
 };
