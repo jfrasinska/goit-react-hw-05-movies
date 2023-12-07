@@ -13,7 +13,7 @@ const Movies = () => {
   };
 
   return (
-    <div className="container">
+    <div>
       <h1 className="search-title">Search Movies</h1>
       <input
         type="text"

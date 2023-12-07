@@ -1,19 +1,20 @@
 import React from 'react';
+import './Reviews.css';
 
 const Reviews = ({ reviews }) => (
-  <div>
-    <h2>Reviews</h2>
+  <div className="reviews-container">
+    <h2 className="reviews-title">Reviews</h2>
     {reviews.length > 0 ? (
-      <ul>
+      <ul className="reviews-list">
         {reviews.map(review => (
-          <li key={review.id}>
-            <p>{review.author}</p>
-            <p>{review.content}</p>
+          <li key={review.id} className="review-item">
+            <p className="review-author">{review.author}</p>
+            <p className="review-content">{review.content}</p>
           </li>
         ))}
       </ul>
     ) : (
-      <p>No reviews available for this movie.</p>
+      <p className="no-reviews">No reviews available for this movie.</p>
     )}
   </div>
 );
