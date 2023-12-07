@@ -1,7 +1,8 @@
+// Home.jsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getTrendingMovies } from '../Api';
-import './Home.css';
+import './Home.css'; // Dodaj ten import
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);

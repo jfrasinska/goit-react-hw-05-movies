@@ -1,6 +1,7 @@
-import React, { lazy } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { useParams, Link, Route, Routes } from 'react-router-dom';
 import { getMovieDetails, getMovieCredits, getMovieReviews } from '../Api';
+import './MovieDetails.css';
 
 const Cast = lazy(() => import('../Cast/Cast'));
 const Reviews = lazy(() => import('../Reviews/Reviews'));
@@ -38,22 +39,27 @@ const MovieDetails = () => {
 
   return (
     <div>
-      <h1>{movie.title}</h1>
-      <img
-        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-        alt={`${movie.title} poster`}
-      />
-      <p>{movie.overview}</p>
-      <nav>
+      <h1 className="movie-title">{movie.title}</h1>
+      <div className="movie-container">
+        <img
+          className="movie-poster"
+          src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+          alt={`${movie.title} poster`}
+        />
+        <p className="movie-overview">{movie.overview}</p>
+      </div>
+      <nav className="movie-nav">
         <Link to={`/movies/${movieId}/cast`}>Cast</Link>
         <Link to={`/movies/${movieId}/reviews`}>Reviews</Link>
       </nav>
       <hr />
-      <Routes>
-        <Route index element={<div>Default Content for MovieDetails</div>} />
-        <Route path="cast" element={<Cast cast={cast} />} />
-        <Route path="reviews" element={<Reviews reviews={reviews} />} />
-      </Routes>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route index element={<div>Default Content for MovieDetails</div>} />
+          <Route path="cast" element={<Cast cast={cast} />} />
+          <Route path="reviews" element={<Reviews reviews={reviews} />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 };
